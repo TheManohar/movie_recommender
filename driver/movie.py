@@ -2,8 +2,8 @@ import pandas as pd
 PATH = "../rawData/movie_recommendations.xlsx"
 df = pd.read_excel(PATH)
 # find and remove duplicate movie entries (to avoid problems with unstack)
-#duplicates = df.index
-#df.index.drop_duplicates()
+duplicates = df.index
+df.index.drop_duplicates()
 
 print(df.head(10))
 print(df.groupby('Reviewer')['Rating'].mean)
@@ -14,13 +14,12 @@ df.sort_values('Rating', ascending = False, inplace = True)
 print(df.head(5).sample(1))
 
 df.set_index('Name', inplace=True)
-print(df.head(3))
+print(df.head(5))
 
 long = df.stack()
 print(long.shape)
 print(df.shape)
 print(long.head(10))
-long['Lion'] 
 
 short = long.head(15)
 wide = short.unstack(1) #unstack based on Gender (second column in the short)
