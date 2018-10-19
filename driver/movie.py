@@ -22,6 +22,7 @@ print(df.shape)
 print(long.head(10))
 
 short = long.head(15)
+print("short",short)
 wide = short.unstack(1) #unstack based on Gender (second column in the short)
 print(wide)
 
