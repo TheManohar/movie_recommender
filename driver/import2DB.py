@@ -39,3 +39,4 @@ def createDBfromIMDB():
 
     print('\n### Congrats! Database movies.db created! ###')
 
+createDBfromIMDB()
