@@ -6,14 +6,19 @@ def createDBfromIMDB():
 
     df1 = pd.read_csv('../rawData/title.akas.tsv', sep='\t') 
     df2 = pd.read_csv('../rawData/title.ratings.tsv', sep='\t') 
+    df3 = pd.read_csv('../rawData/title.basics.tsv', sep='\t')
+
     df1.set_index('titleId', inplace = True)
     df2.set_index('tconst', inplace = True)
+    df3.set_index('tconst', inplace = True)
     print(df1.head())
     print(df2.head())
-
-    df3 = pd.merge(df1, df2, left_index = True, right_index = True, how = 'outer')
     print(df3.head())
 
+    dfM1 = pd.merge(df1, df2, left_index = True, right_index = True, how = 'outer')
+    print(dfM1.head())
+    dfM2 = pd.merge(dfM1, df3, left_index = True, right_index = True, how = 'outer')
+    
 
     DB_SETUP = """
     CREATE TABLE IF NOT EXISTS moviesDB (
@@ -23,16 +28,23 @@ def createDBfromIMDB():
         language VARCHAR(255),
         isOriginalTitle BOOLEAN,
         averageRating FLOAT,
-        numVotes INTEGER
+        numVotes INTEGER,
+        titleType VARCHAR(255),
+        primaryTitle VARCHAR(255),
+        originalTitle VARCHAR(255),
+        startYear INTEGER,
+        endYear INTEGER,
+        runTimeMinutes INTEGER,
+        genres VARCHAR(255),
     );
     """
 
-    db = sqlite3.connect('movies.db')
+    db = sqlite3.connect('movies2.db')
     db.executescript(DB_SETUP)
 
-    for i, row in df3.iterrows():
+    for i, row in dfM2.iterrows():
         query = 'INSERT INTO moviesDB VALUES (?,?,?,?,?,?,?)'
-        db.execute(query, (i, row['ordering'], row["title"], row["language"], row["isOriginalTitle"], row["averageRating"], row["numVotes"]))
+        db.execute(query, (i, row['ordering'], row["title"], row["language"], row["isOriginalTitle"], row["averageRating"], row["numVotes"], row['titleType'], row['primaryTitle'], row['originalTitle'], row['startYear'], row['endYear'], row['runTimeMinutes'], row['genres'], ))
 
     db.commit()
     db.close()
