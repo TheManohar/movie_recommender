@@ -18,7 +18,7 @@ def createDBfromIMDB():
     dfM1 = pd.merge(df1, df2, left_index = True, right_index = True, how = 'outer')
     print(dfM1.head())
     dfM2 = pd.merge(dfM1, df3, left_index = True, right_index = True, how = 'outer')
-    
+    print(dfM2.head()) 
 
     DB_SETUP = """
     CREATE TABLE IF NOT EXISTS moviesDB (
@@ -34,8 +34,8 @@ def createDBfromIMDB():
         originalTitle VARCHAR(255),
         startYear INTEGER,
         endYear INTEGER,
-        runTimeMinutes INTEGER,
-        genres VARCHAR(255),
+        runtimeMinutes INTEGER,
+        genres VARCHAR(255)
     );
     """
 
@@ -43,8 +43,8 @@ def createDBfromIMDB():
     db.executescript(DB_SETUP)
 
     for i, row in dfM2.iterrows():
-        query = 'INSERT INTO moviesDB VALUES (?,?,?,?,?,?,?)'
-        db.execute(query, (i, row['ordering'], row["title"], row["language"], row["isOriginalTitle"], row["averageRating"], row["numVotes"], row['titleType'], row['primaryTitle'], row['originalTitle'], row['startYear'], row['endYear'], row['runTimeMinutes'], row['genres'], ))
+        query = 'INSERT INTO moviesDB VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+        db.execute(query, (i, row['ordering'], row["title"], row["language"], row["isOriginalTitle"], row["averageRating"], row["numVotes"], row['titleType'], row['primaryTitle'], row['originalTitle'], row['startYear'], row['endYear'], row['runtimeMinutes'], row['genres'], ))
 
     db.commit()
     db.close()
