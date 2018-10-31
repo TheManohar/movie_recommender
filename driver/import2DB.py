@@ -4,9 +4,9 @@ def createDBfromIMDB():
     import sys
     sys.path.insert(0, '../drivers')
 
-    df1 = pd.read_csv('../rawData/title.akas.tsv', sep='\t') 
-    df2 = pd.read_csv('../rawData/title.ratings.tsv', sep='\t') 
-    df3 = pd.read_csv('../rawData/title.basics.tsv', sep='\t')
+    df1 = pd.read_csv('../rawData/title_akas.tsv', sep='\t') 
+    df2 = pd.read_csv('../rawData/title_ratings.tsv', sep='\t') 
+    df3 = pd.read_csv('../rawData/title_basics.tsv', sep='\t')
 
     df1.set_index('titleId', inplace = True)
     df2.set_index('tconst', inplace = True)
