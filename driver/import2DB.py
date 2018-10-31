@@ -13,14 +13,15 @@ def createDBfromIMDB():
     df1.set_index('titleId', inplace = True)
     df2.set_index('tconst', inplace = True)
     df3.set_index('tconst', inplace = True)
-    print(df1.head())
-    print(df2.head())
-    print(df3.head())
+    #print(df1.head())
+    #print(df2.head())
+    #print(df3.head())
 
     dfM1 = pd.merge(df1, df2, left_index = True, right_index = True, how = 'outer')
-    print(dfM1.head())
+    #print(dfM1.head())
     dfM2 = pd.merge(dfM1, df3, left_index = True, right_index = True, how = 'outer')
-    print(dfM2.head()) 
+    #print(dfM2.head())
+    #print(dfM2.columns)
 
     DB_SETUP = """
     CREATE TABLE IF NOT EXISTS moviesIMDB (
@@ -81,10 +82,12 @@ def createDBfromGrouplens():
     print(dfM2.head())
     dfM3 = pd.merge(dfM2, df4[['tag']], left_index = True, right_index = True, how = 'outer')
     print(dfM3.head())
+    print(len(dfM3))
       
     DB_SETUP = """
     CREATE TABLE IF NOT EXISTS moviesGroupLens (
-        id VARCHAR(255),
+        movieId VARCHAR(255),
+        userId INTEGER,
         imdbId INTEGER,
         tmdbId INTEGER,
         title VARCHAR(255),
@@ -99,8 +102,8 @@ def createDBfromGrouplens():
     db.executescript(DB_SETUP)
 
     for i, row in dfM3.iterrows():
-        query = 'INSERT INTO moviesGroupLens VALUES (?,?,?,?,?,?,?,?)'
-        db.execute(query, (i, row['imdbId'], row["tmdbId"], row["title"], row["genres"], row["rating"], row["timestamp"], row['tag']))
+        query = 'INSERT INTO moviesGroupLens VALUES (?,?,?,?,?,?,?,?,?)'
+        db.execute(query, (i, row['userId'], row['imdbId'], row["tmdbId"], row["title"], row["genres"], row["rating"], row["timestamp"], row['tag']))
 
     db.commit()
     db.close()
