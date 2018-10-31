@@ -78,7 +78,7 @@ def createDBfromGrouplens():
       print(dfM1.head())
       dfM2 = pd.merge(dfM1, df3, left_index = True, right_index = True, how = 'outer')
       print(dfM2.head())
-      dfM3 = pd.merge(dfM2, df4, left_index = True, right_index = True, how = 'outer')
+      dfM3 = pd.merge(dfM2, df4[['tag']], left_index = True, right_index = True, how = 'outer')
       print(dfM3.head())
       
       DB_SETUP = """
@@ -90,14 +90,14 @@ def createDBfromGrouplens():
           genres VARCHAR(255),
           rating FLOT,
           timestamp INTEGER,
-          tag VARCHAR(255),
+          tag VARCHAR(255)
       );
       """
 
       db = sqlite3.connect('moviesGroupLens.db')
       db.executescript(DB_SETUP)
 
-      for i, row in dfM2.iterrows():
+      for i, row in dfM3.iterrows():
           query = 'INSERT INTO moviesGroupLens VALUES (?,?,?,?,?,?,?,?)'
           db.execute(query, (i, row['imdbId'], row["tmdbId"], row["title"], row["genres"], row["rating"], row["timestamp"], row['tag']))
 
@@ -105,6 +105,10 @@ def createDBfromGrouplens():
       db.close()
 
       print('\n### Congrats! GroupLens Database moviesGroupLens.db created! ###')
+
+import sys
+database = sys.argv[1]
+print("{}".format(database))
 
 if database == 'IMDB':
     createDBfromIMDB()
